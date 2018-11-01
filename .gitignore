@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log
+build
+secrets.*.js
+.idea/
+.git/
+InspectorGeneral.iml
+*.map
+*.DS_Store
