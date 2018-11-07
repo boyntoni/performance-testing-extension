@@ -3,7 +3,7 @@
         {
            "matches": ["<all_urls>"],
             "js": [
-                "content.js"
+                "content.bundle.js"
             ]
         }
     ],
@@ -16,7 +16,7 @@
     ],
     "description": "Allows for accurate testing of JW Player Ad Request Timeout", 
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["background.bundle.js"]
     }, 
     "homepage_url": "http://developer.jwplayer.com/", 
     "version": "0.0.1", 

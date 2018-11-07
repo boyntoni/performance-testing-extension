@@ -4,3 +4,5 @@ function injectScript() {
     s.src = chrome.extension.getURL("inject.bundle.js");
     document.head.append(s);
 }
+
+injectScript();

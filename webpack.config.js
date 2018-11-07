@@ -1,11 +1,13 @@
 const webpack = require("webpack");
 const path = require("path");
-const env = require("./utils/env");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const WriteFilePlugin = require("write-file-webpack-plugin");
+
+const fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2"];
 
 const options = {
+    mode: "none",
+    //  load all files in directory. construct an array to compile into one file
     entry: {
         background: path.join(__dirname, "src", "js", "background.js"),
         inject: path.join(__dirname, "src", "js", "inject.js"),
@@ -16,7 +18,7 @@ const options = {
         filename: "[name].bundle.js",
     },
     module: {
-        loaders: [
+        rules: [
             {
                 enforce: "pre",
                 test: /\.(js)$/,
@@ -28,21 +30,23 @@ const options = {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 loader: "babel-loader",
+                options: {
+                    presets: ["@babel/preset-env"],
+                    plugins: ["@babel/transform-runtime"],
+                },
+            },
+            {
+                test: new RegExp(`.("${fileExtensions.join("|")})$`),
+                loader: "file-loader?name=[name].[ext]",
+                exclude: /node_modules/,
             },
         ],
     },
     plugins: [
-        new webpack.DefinePlugin({
-            "process.env": {
-                NODE_ENV: "'production'",
-            },
-        }),
         // clean the build folder
         new CleanWebpackPlugin(["build"]),
-        // expose and write the allowed env vars on the compiled bundle
-        new webpack.DefinePlugin({
-            "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV),
-        }),
+        new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("developmemnt") }),
+        new webpack.optimize.ModuleConcatenationPlugin(),
         new CopyWebpackPlugin([{
             from: "src/manifest.json",
             transform: (content) => {
@@ -53,7 +57,6 @@ const options = {
                 return Buffer.from(JSON.stringify(contentItems));
             },
         }]),
-        new WriteFilePlugin(),
     ],
 };
 
